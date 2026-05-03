@@ -82,3 +82,19 @@ SELECT
     (SELECT COUNT(*) FROM audit_logs al WHERE al.target_account_id = a.id) as audit_count
 FROM accounts a
 JOIN users u ON a.user_id = u.id;
+-- ---------------------------------------------------------
+-- SEED DATA (Default Admin and Test User)
+-- ---------------------------------------------------------
+
+INSERT INTO users (username, email, password_hash, phone_number, account_tier, role)
+VALUES ('System Admin', 'admin@gmail.com', 'password123', '+1 000 000 000', 'Standard', 'ADMIN');
+
+INSERT INTO users (username, email, password_hash, phone_number, account_tier, role)
+VALUES ('Austin Aeden', 'austinaeden@gmail.com', 'password123', '+1 234 567 890', 'Standard', 'USER');
+
+-- Add some initial accounts for the test user
+INSERT INTO accounts (user_id, account_name, account_number, account_type, balance)
+VALUES (2, 'Checking', '**** 4421', 'Personal', 12450.50);
+
+INSERT INTO accounts (user_id, account_number, account_type, balance)
+VALUES (2, '**** 8892', 'Personal', 45200.00);
