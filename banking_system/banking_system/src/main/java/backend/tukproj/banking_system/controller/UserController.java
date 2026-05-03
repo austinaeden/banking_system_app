@@ -59,4 +59,15 @@ public class UserController {
             return ResponseEntity.badRequest().body(Map.of("success", false, "message", "User not found"));
         }
     }
+
+    @PutMapping("/{id}/photo")
+    public ResponseEntity<?> updatePhoto(@PathVariable Long id, @RequestBody Map<String, String> photoData) {
+        String photoUrl = photoData.get("photoUrl");
+        User updatedUser = userService.updateProfilePhoto(id, photoUrl);
+        if (updatedUser != null) {
+            return ResponseEntity.ok(Map.of("success", true, "user", updatedUser));
+        } else {
+            return ResponseEntity.badRequest().body(Map.of("success", false, "message", "User not found"));
+        }
+    }
 }

@@ -16,7 +16,7 @@ public class User {
     private Long id;
 
     @Column(nullable = false, length = 100)
-    @JsonProperty("name")
+    @JsonProperty("username")
     private String username;
 
     @Column(nullable = false, unique = true, length = 100)
@@ -36,10 +36,11 @@ public class User {
     @Column(length = 20)
     private String role = "USER";
 
-    @Column(name = "profile_photo")
+    @Column(name = "profile_photo", columnDefinition = "LONGTEXT")
     private String profilePhoto;
 
     @Column(name = "registered_at", insertable = true, updatable = true)
+    @com.fasterxml.jackson.annotation.JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private LocalDateTime registeredAt;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

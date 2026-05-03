@@ -137,12 +137,12 @@ export default function Layout({ children, user, onLogout, activeTab, setActiveT
             
             <div className="flex items-center gap-3 pl-6 border-l border-slate-200">
               <div className="text-right hidden sm:block">
-                <p className="text-sm font-bold text-slate-900 leading-none">{user?.name}</p>
+                <p className="text-sm font-bold text-slate-900 leading-none">{user?.name || user?.username}</p>
                 <p className="text-xs text-slate-500 mt-1">{user?.role === 'ADMIN' ? 'System Administrator' : user?.email}</p>
               </div>
               <Avatar className={`w-11 h-11 border-2 ${user?.role === 'ADMIN' ? 'border-indigo-100' : 'border-veridian-100'} shadow-sm`}>
-                <AvatarImage src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.name}&backgroundColor=${user?.role === 'ADMIN' ? 'c7d2fe' : 'a7f3d0'}`} />
-                <AvatarFallback>{user?.name?.charAt(0)}</AvatarFallback>
+                <AvatarImage src={user?.profilePhoto || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.username}&backgroundColor=${user?.role === 'ADMIN' ? 'c7d2fe' : 'a7f3d0'}`} />
+                <AvatarFallback>{(user?.name || user?.username)?.charAt(0)}</AvatarFallback>
               </Avatar>
             </div>
           </div>

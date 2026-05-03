@@ -9,12 +9,31 @@ export const api = {
         body: JSON.stringify({ email, password })
       });
       if (!response.ok) {
-        return { success: false, message: 'Server error. Please try again.' };
+        const errorData = await response.json().catch(() => ({}));
+        return { success: false, message: errorData.message || 'Server error. Please try again.' };
       }
       return await response.json();
     } catch (error) {
       console.error("Login Error:", error);
-      return { success: false, message: 'Cannot connect to server. Please ensure the backend is running on port 8080.' };
+      return { success: false, message: 'Cannot connect to server. Please ensure the backend is running on port 8085.' };
+    }
+  },
+
+  register: async (username, email, password) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/auth/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, email, password })
+      });
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        return { success: false, message: errorData.message || 'Server error. Please try again.' };
+      }
+      return await response.json();
+    } catch (error) {
+      console.error("Register Error:", error);
+      return { success: false, message: 'Cannot connect to server. Please ensure the backend is running on port 8085.' };
     }
   },
 
@@ -78,6 +97,20 @@ export const api = {
       return await response.json();
     } catch (error) {
       console.error("Notify Error:", error);
+      return { success: false, message: 'Network error occurred.' };
+    }
+  },
+
+  updatePhoto: async (photoUrl, userId) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/users/${userId}/photo`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ photoUrl })
+      });
+      return await response.json();
+    } catch (error) {
+      console.error("UpdatePhoto Error:", error);
       return { success: false, message: 'Network error occurred.' };
     }
   }

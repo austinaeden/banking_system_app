@@ -15,14 +15,30 @@ import { Label } from '@/components/ui/label';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
 
-export default function Profile({ user, onUpdate }) {
+export default function Profile({ user, onUpdate, onUpdatePhoto }) {
   const [formData, setFormData] = useState({
-    name: user.name,
+    name: user.name || user.username,
     email: user.email,
-    phone: user.phone
+    phone: user.phone || user.phoneNumber
   });
+  const [photoUrl, setPhotoUrl] = useState(user.profilePhoto || '');
   const [loading, setLoading] = useState(false);
   const [saved, setSaved] = useState(false);
+
+  const handlePhotoUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size > 2 * 1024 * 1024) {
+        alert("Image is too large. Please select a file smaller than 2MB.");
+        return;
+      }
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        onUpdatePhoto(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -40,16 +56,30 @@ export default function Profile({ user, onUpdate }) {
       <div className="flex items-center gap-6">
         <div className="relative group">
           <Avatar className="w-24 h-24 border-4 border-white shadow-xl">
-            <AvatarImage src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user.name}`} />
-            <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+            <AvatarImage src={user.profilePhoto || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.username}`} />
+            <AvatarFallback>{(user.name || user.username).charAt(0)}</AvatarFallback>
           </Avatar>
-          <button className="absolute bottom-0 right-0 p-2 bg-veridian-700 text-white rounded-full shadow-lg hover:bg-veridian-800 transition-colors">
-            <Camera className="w-4 h-4" />
-          </button>
+          <div className="absolute bottom-0 right-0">
+            <label 
+              htmlFor="photo-upload"
+              className="p-2 bg-veridian-700 text-white rounded-full shadow-lg hover:bg-veridian-800 transition-colors cursor-pointer flex items-center justify-center"
+            >
+              <Camera className="w-4 h-4" />
+              <input 
+                id="photo-upload" 
+                type="file" 
+                accept="image/*" 
+                className="hidden" 
+                onChange={handlePhotoUpload}
+              />
+            </label>
+          </div>
         </div>
         <div>
-          <h1 className="text-3xl font-bold text-slate-900">{user.name}</h1>
-          <p className="text-slate-500">Member since March 2024 • Premium Account</p>
+          <h1 className="text-3xl font-bold text-slate-900">{user.name || user.username}</h1>
+          <p className="text-slate-500">
+            Member since {user.registeredAt ? new Date(user.registeredAt).toLocaleDateString() : 'Recent'} • Premium Account
+          </p>
         </div>
       </div>
 

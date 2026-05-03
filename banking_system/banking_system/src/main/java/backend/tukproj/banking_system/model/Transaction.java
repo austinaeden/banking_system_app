@@ -34,7 +34,8 @@ public class Transaction {
     @Column(length = 100)
     private String category = "None";
 
-    @Column(name = "transaction_date", insertable = false, updatable = false)
+    @Column(name = "transaction_date", insertable = true, updatable = false)
+    @com.fasterxml.jackson.annotation.JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private LocalDateTime transactionDate;
 
     @PrePersist

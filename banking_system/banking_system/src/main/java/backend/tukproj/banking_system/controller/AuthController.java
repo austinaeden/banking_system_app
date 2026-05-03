@@ -27,4 +27,18 @@ public class AuthController {
             return ResponseEntity.ok(Map.of("success", false, "message", "Invalid credentials"));
         }
     }
+
+    @PostMapping("/register")
+    public ResponseEntity<?> register(@RequestBody Map<String, String> userData) {
+        try {
+            String username = userData.get("username");
+            String email = userData.get("email");
+            String password = userData.get("password");
+
+            User user = userService.register(username, email, password);
+            return ResponseEntity.ok(Map.of("success", true, "user", user));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("success", false, "message", e.getMessage()));
+        }
+    }
 }

@@ -13,7 +13,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
-export default function Auth({ onLogin }) {
+export default function Auth({ onLogin, onRegister }) {
   const [mode, setMode] = useState('login');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -37,12 +37,15 @@ export default function Auth({ onLogin }) {
         setError(result || 'Invalid email or password');
       }
     } else if (mode === 'register') {
-      setTimeout(() => {
-        setSuccess('Account created! Please login.');
-        setMode('login');
+      if (formData.password !== formData.confirmPassword) {
+        setError('Passwords do not match');
         setLoading(false);
-      }, 1500);
-      return;
+        return;
+      }
+      const result = await onRegister(formData.name, formData.email, formData.password);
+      if (result !== true) {
+        setError(result || 'Registration failed');
+      }
     } else {
       setTimeout(() => {
         setSuccess('Recovery email sent!');
@@ -148,6 +151,24 @@ export default function Auth({ onLogin }) {
                     required
                     value={formData.password}
                     onChange={(e) => setFormData({...formData, password: e.target.value})}
+                  />
+                </div>
+              </div>
+            )}
+
+            {mode === 'register' && (
+              <div className="space-y-2">
+                <Label htmlFor="confirmPassword">Confirm Password</Label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                  <Input 
+                    id="confirmPassword" 
+                    type="password" 
+                    placeholder="••••••••" 
+                    className="pl-10 h-11"
+                    required
+                    value={formData.confirmPassword}
+                    onChange={(e) => setFormData({...formData, confirmPassword: e.target.value})}
                   />
                 </div>
               </div>

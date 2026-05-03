@@ -10,7 +10,7 @@ CREATE TABLE users (
     phone_number VARCHAR(20),
     account_tier VARCHAR(50) DEFAULT 'Standard',
     role VARCHAR(20) DEFAULT 'USER', -- 'USER' or 'ADMIN'
-    profile_photo VARCHAR(255),
+    profile_photo LONGTEXT, -- Stores Base64 image data
     registered_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 

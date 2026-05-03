@@ -68,6 +68,16 @@ export default function App() {
     return res.message || 'Invalid email or password';
   };
 
+  const handleRegister = async (username, email, pass) => {
+    const res = await api.register(username, email, pass);
+    if (res.success) {
+      setUser(res.user);
+      setActiveTab('dashboard');
+      return true;
+    }
+    return res.message || 'Registration failed';
+  };
+
   const handleTransfer = async (transferData) => {
     const res = await api.transfer(transferData.fromAccount, transferData.toAccount, transferData.amount, user.id);
     if (res.success) {
@@ -81,6 +91,15 @@ export default function App() {
 
   const handleUpdateProfile = async (profileData) => {
     const res = await api.updateProfile(profileData, user.id);
+    if (res.success) {
+      setUser(res.user);
+      return true;
+    }
+    return false;
+  };
+
+  const handleUpdatePhoto = async (photoUrl) => {
+    const res = await api.updatePhoto(photoUrl, user.id);
     if (res.success) {
       setUser(res.user);
       return true;
@@ -102,7 +121,7 @@ export default function App() {
   };
 
   if (!user) {
-    return <Auth onLogin={handleLogin} />;
+    return <Auth onLogin={handleLogin} onRegister={handleRegister} />;
   }
 
   // Render appropriate view based on activeTab and User Role
@@ -115,7 +134,7 @@ export default function App() {
         case 'accounts': return <AdminAccounts />;
         case 'transactions': return <AdminTransactions />;
         case 'send-notifications': return <AdminSendNotification onSendNotification={handleSendNotification} />;
-        case 'profile': return <Profile user={user} onUpdate={handleUpdateProfile} />;
+        case 'profile': return <Profile user={user} onUpdate={handleUpdateProfile} onUpdatePhoto={handleUpdatePhoto} />;
         case 'settings': return <div className="p-8 text-slate-400">System settings coming soon...</div>;
         case 'notifications': return <Notifications notifications={notifications} />;
         default: return <AdminOverview />;
@@ -127,7 +146,7 @@ export default function App() {
       case 'dashboard': return <Dashboard accounts={accounts} transactions={transactions} />;
       case 'transfer': return <Transfer accounts={accounts} onTransfer={handleTransfer} />;
       case 'transactions': return <Transactions transactions={transactions} />;
-      case 'profile': return <Profile user={user} onUpdate={handleUpdateProfile} />;
+      case 'profile': return <Profile user={user} onUpdate={handleUpdateProfile} onUpdatePhoto={handleUpdatePhoto} />;
       case 'settings': return <div className="flex items-center justify-center h-[60vh] text-slate-400">Settings module coming soon...</div>;
       case 'notifications': return <Notifications notifications={notifications} />;
       default: return <Dashboard accounts={accounts} transactions={transactions} />;
