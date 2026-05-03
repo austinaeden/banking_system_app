@@ -48,12 +48,14 @@ The system comes pre-seeded with the following accounts:
 ## ✨ Features
 
 ### 🏦 User Dashboard
+![alt text](image.png)
 - **Real-time Balance**: View checking and savings balances.
 - **Transactions**: Full history with categorization and search.
 - **Transfers**: Secure fund transfers between accounts.
 - **Profile**: Manage contact info and account status.
 
 ### 🛡️ Admin Console (MiniBank Admin)
+![alt text](image-1.png)
 - **System Overview**: High-level liquidity and user metrics.
 - **User Management**: View and monitor all registered members.
 - **Account Auditing**: Monitor every account and its status.
