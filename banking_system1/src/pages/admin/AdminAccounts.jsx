@@ -4,23 +4,28 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { mockDb } from '@/lib/mockDb';
+import { api } from '@/lib/api';
 
 export default function AdminAccounts() {
   const [adminData, setAdminData] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
-    setAdminData(mockDb.getAdminData());
+    const loadData = async () => {
+      const data = await api.getAdminData();
+      setAdminData(data);
+    };
+    loadData();
   }, []);
 
   if (!adminData) return null;
 
-  const { allAccounts, allUsers } = adminData;
+  const allAccounts = adminData?.allAccounts || [];
+  const allUsers = adminData?.allUsers || [];
 
   const filteredAccounts = allAccounts.filter(acc => 
-    acc.accountNumber.includes(searchTerm) ||
-    acc.type.toLowerCase().includes(searchTerm.toLowerCase())
+    (acc.accountNumber || '').includes(searchTerm) ||
+    (acc.type || '').toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (

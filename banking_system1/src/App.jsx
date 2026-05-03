@@ -14,7 +14,9 @@ import AdminOverview from './pages/admin/AdminOverview';
 import AdminUsers from './pages/admin/AdminUsers';
 import AdminAccounts from './pages/admin/AdminAccounts';
 import AdminTransactions from './pages/admin/AdminTransactions';
-import { mockDb } from './lib/mockDb';
+import AdminSendNotification from './pages/admin/AdminSendNotification';
+import Notifications from './pages/Notifications';
+import { api } from './lib/api';
 import './App.css';
 
 export default function App() {
@@ -23,32 +25,53 @@ export default function App() {
   const [transactions, setTransactions] = useState([]);
   const [activeTab, setActiveTab] = useState('dashboard');
   const [loading, setLoading] = useState(true);
+  const [notifications, setNotifications] = useState([
+    {
+      id: 1,
+      name: 'Security Alert',
+      date: 'MAY 03, 2026',
+      time: '19:15 PM',
+      message: 'A new login was detected from a new device in your location.',
+    },
+    {
+      id: 2,
+      name: 'System Update',
+      date: 'MAY 02, 2026',
+      time: '10:00 AM',
+      message: 'Veridian Bank systems will undergo scheduled maintenance this Sunday at 2:00 AM.',
+    }
+  ]);
 
   // When a user logs in or is restored, load appropriate data
   useEffect(() => {
-    if (user && user.role !== 'ADMIN') {
-      const data = mockDb.getUserData(user.id);
-      setAccounts(data.accounts);
-      setTransactions(data.transactions);
-    }
-    setLoading(false);
+    const loadUserData = async () => {
+      if (user && user.role !== 'ADMIN') {
+        const data = await api.getUserData(user.id);
+        setAccounts(data.accounts);
+        setTransactions(data.transactions);
+        if (data.notifications) setNotifications(data.notifications);
+      }
+      setLoading(false);
+    };
+    loadUserData();
   }, [user]);
 
   const handleLogin = async (email, pass) => {
-    const res = mockDb.login(email, pass);
+    const res = await api.login(email, pass);
     if (res.success) {
       setUser(res.user);
       // Set correct default tab based on role
       setActiveTab(res.user.role === 'ADMIN' ? 'overview' : 'dashboard');
       return true;
     }
-    return false;
+    // Return the error message so Auth.jsx can show it
+    return res.message || 'Invalid email or password';
   };
 
   const handleTransfer = async (transferData) => {
-    const res = mockDb.transfer(transferData.fromAccount, transferData.toAccount, transferData.amount, user.id);
+    const res = await api.transfer(transferData.fromAccount, transferData.toAccount, transferData.amount, user.id);
     if (res.success) {
-      const data = mockDb.getUserData(user.id);
+      const data = await api.getUserData(user.id);
       setAccounts(data.accounts);
       setTransactions(data.transactions);
       return true;
@@ -57,12 +80,25 @@ export default function App() {
   };
 
   const handleUpdateProfile = async (profileData) => {
-    const res = mockDb.updateProfile(profileData, user.id);
+    const res = await api.updateProfile(profileData, user.id);
     if (res.success) {
       setUser(res.user);
       return true;
     }
     return false;
+  };
+
+  const handleSendNotification = async (notif) => {
+    const res = await api.sendNotification(notif.name, notif.message);
+    if (res.success) {
+      const newNotif = {
+        id: Date.now(),
+        ...notif,
+        date: new Date().toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }).toUpperCase(),
+        time: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
+      };
+      setNotifications([newNotif, ...notifications]);
+    }
   };
 
   if (!user) {
@@ -78,8 +114,10 @@ export default function App() {
         case 'users': return <AdminUsers />;
         case 'accounts': return <AdminAccounts />;
         case 'transactions': return <AdminTransactions />;
+        case 'send-notifications': return <AdminSendNotification onSendNotification={handleSendNotification} />;
         case 'profile': return <Profile user={user} onUpdate={handleUpdateProfile} />;
         case 'settings': return <div className="p-8 text-slate-400">System settings coming soon...</div>;
+        case 'notifications': return <Notifications notifications={notifications} />;
         default: return <AdminOverview />;
       }
     }
@@ -91,6 +129,7 @@ export default function App() {
       case 'transactions': return <Transactions transactions={transactions} />;
       case 'profile': return <Profile user={user} onUpdate={handleUpdateProfile} />;
       case 'settings': return <div className="flex items-center justify-center h-[60vh] text-slate-400">Settings module coming soon...</div>;
+      case 'notifications': return <Notifications notifications={notifications} />;
       default: return <Dashboard accounts={accounts} transactions={transactions} />;
     }
   };

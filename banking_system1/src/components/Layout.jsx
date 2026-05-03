@@ -29,6 +29,7 @@ export default function Layout({ children, user, onLogout, activeTab, setActiveT
     { id: 'users', label: 'Users', icon: Users },
     { id: 'accounts', label: 'Accounts', icon: CreditCard },
     { id: 'transactions', label: 'Transactions', icon: ArrowRightLeft },
+    { id: 'send-notifications', label: 'Notify Users', icon: Bell },
   ];
 
   const navItems = user?.role === 'ADMIN' ? adminNavItems : standardNavItems;
@@ -129,7 +130,7 @@ export default function Layout({ children, user, onLogout, activeTab, setActiveT
           </div>
 
           <div className="flex items-center gap-6">
-            <button className="relative p-2 text-slate-500 hover:text-slate-800 transition-colors">
+            <button onClick={() => setActiveTab('notifications')} className="relative p-2 text-slate-500 hover:text-slate-800 transition-colors">
               <Bell className="w-6 h-6" />
               <span className="absolute top-2 right-2 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white shadow-sm"></span>
             </button>

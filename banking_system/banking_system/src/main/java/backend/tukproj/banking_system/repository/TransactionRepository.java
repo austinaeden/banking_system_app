@@ -1,0 +1,13 @@
+package backend.tukproj.banking_system.repository;
+
+import backend.tukproj.banking_system.model.Transaction;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+@Repository
+public interface TransactionRepository extends JpaRepository<Transaction, Long> {
+    List<Transaction> findByUser_IdOrderByTransactionDateDesc(Long userId);
+    List<Transaction> findAllByOrderByTransactionDateDesc();
+}

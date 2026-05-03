@@ -4,19 +4,23 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { mockDb } from '@/lib/mockDb';
+import { api } from '@/lib/api';
 
 export default function AdminUsers() {
   const [users, setUsers] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
-    setUsers(mockDb.getAdminData().allUsers);
+    const loadData = async () => {
+      const data = await api.getAdminData();
+      setUsers(data.allUsers || []);
+    };
+    loadData();
   }, []);
 
-  const filteredUsers = users.filter(user => 
-    user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.email.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredUsers = (users || []).filter(user => 
+    (user.name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (user.email || '').toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -52,7 +56,7 @@ export default function AdminUsers() {
               <div className="flex justify-between items-start">
                 <div className="-mt-12 w-24 h-24 rounded-2xl bg-white p-1 rounded-full shadow-lg">
                   <div className={`w-full h-full rounded-full flex items-center justify-center text-3xl font-black text-white ${user.role === 'ADMIN' ? 'bg-indigo-500' : 'bg-emerald-500'}`}>
-                    {user.name.charAt(0)}
+                    {user.name ? user.name.charAt(0) : '?'}
                   </div>
                 </div>
                 <Badge className={`mt-4 border-none shadow-sm ${user.role === 'ADMIN' ? 'bg-indigo-100 text-indigo-800' : 'bg-emerald-100 text-emerald-800'}`}>

@@ -3,18 +3,30 @@ import { DollarSign, Users, Activity, ShieldAlert, ArrowDownLeft, ArrowUpRight }
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { mockDb } from '@/lib/mockDb';
+import { api } from '@/lib/api';
 
 export default function AdminOverview() {
   const [adminData, setAdminData] = useState(null);
 
   useEffect(() => {
-    setAdminData(mockDb.getAdminData());
+    const loadData = async () => {
+      const data = await api.getAdminData();
+      setAdminData(data);
+    };
+    loadData();
   }, []);
 
   if (!adminData) return <div className="p-8 text-center text-slate-500 font-medium">Loading Dashboard Data...</div>;
 
-  const { stats, allUsers, allTransactions } = adminData;
+  const { stats = {}, allUsers = [], allTransactions = [] } = adminData || {};
+  
+  // Default stats to avoid undefined toLocaleString() crashes
+  const displayStats = {
+    totalLiquidity: stats.totalLiquidity || 0,
+    activeUsers: stats.activeUsers || 0,
+    totalTransactions: stats.totalTransactions || 0,
+    systemHealth: stats.systemHealth || 'Unknown'
+  };
 
   return (
     <div className="space-y-8 pb-12 max-w-7xl mx-auto">
@@ -40,10 +52,10 @@ export default function AdminOverview() {
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {[
-          { label: 'Total Liquidity', value: `$${stats.totalLiquidity.toLocaleString()}`, icon: DollarSign, color: 'bg-indigo-500', shadow: 'shadow-indigo-500/30' },
-          { label: 'Active Users', value: stats.activeUsers, icon: Users, color: 'bg-emerald-500', shadow: 'shadow-emerald-500/30' },
-          { label: 'Total Transactions', value: stats.totalTransactions, icon: Activity, color: 'bg-amber-500', shadow: 'shadow-amber-500/30' },
-          { label: 'Security Status', value: stats.systemHealth, icon: ShieldAlert, color: 'bg-rose-500', shadow: 'shadow-rose-500/30' },
+          { label: 'Total Liquidity', value: `$${displayStats.totalLiquidity.toLocaleString()}`, icon: DollarSign, color: 'bg-indigo-500', shadow: 'shadow-indigo-500/30' },
+          { label: 'Active Users', value: displayStats.activeUsers, icon: Users, color: 'bg-emerald-500', shadow: 'shadow-emerald-500/30' },
+          { label: 'Total Transactions', value: displayStats.totalTransactions, icon: Activity, color: 'bg-amber-500', shadow: 'shadow-amber-500/30' },
+          { label: 'Security Status', value: displayStats.systemHealth, icon: ShieldAlert, color: 'bg-rose-500', shadow: 'shadow-rose-500/30' },
         ].map((stat) => (
           <Card key={stat.label} className="glass-card border-none shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group">
             <CardContent className="p-6">
@@ -73,7 +85,7 @@ export default function AdminOverview() {
                 <div key={user.id} className="flex items-center justify-between p-5 hover:bg-indigo-50/50 transition-colors group">
                   <div className="flex items-center gap-4">
                     <div className="w-12 h-12 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold text-lg group-hover:bg-indigo-600 group-hover:text-white transition-colors duration-300 shadow-sm">
-                      {user.name.charAt(0)}
+                      {user.name ? user.name.charAt(0) : '?'}
                     </div>
                     <div>
                       <p className="font-bold text-slate-900 group-hover:text-indigo-900 transition-colors">{user.name}</p>

@@ -32,8 +32,10 @@ export default function Auth({ onLogin }) {
     setLoading(true);
 
     if (mode === 'login') {
-      const ok = await onLogin(formData.email, formData.password);
-      if (!ok) setError('Invalid email or password');
+      const result = await onLogin(formData.email, formData.password);
+      if (result !== true) {
+        setError(result || 'Invalid email or password');
+      }
     } else if (mode === 'register') {
       setTimeout(() => {
         setSuccess('Account created! Please login.');
