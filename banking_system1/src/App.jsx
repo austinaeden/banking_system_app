@@ -38,7 +38,7 @@ export default function App() {
       name: 'System Update',
       date: 'MAY 02, 2026',
       time: '10:00 AM',
-      message: 'Veridian Bank systems will undergo scheduled maintenance this Sunday at 2:00 AM.',
+      message: 'MiniBank systems will undergo scheduled maintenance this Sunday at 2:00 AM.',
     }
   ]);
 

@@ -68,11 +68,11 @@ export default function Auth({ onLogin }) {
           </div>
           <CardTitle className="text-3xl font-bold text-slate-900">
             {mode === 'login' && 'Welcome Back'}
-            {mode === 'register' && 'Join Veridian'}
+            {mode === 'register' && 'Join MiniBank'}
             {mode === 'recovery' && 'Reset Password'}
           </CardTitle>
           <CardDescription>
-            {mode === 'login' && 'Secure access to your Veridian accounts'}
+            {mode === 'login' && 'Secure access to your MiniBank accounts'}
             {mode === 'register' && 'Start your premium banking journey today'}
             {mode === 'recovery' && 'Enter your email to receive a reset link'}
           </CardDescription>

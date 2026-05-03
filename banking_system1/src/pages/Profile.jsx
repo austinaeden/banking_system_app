@@ -163,7 +163,7 @@ export default function Profile({ user, onUpdate }) {
             <CardContent className="space-y-4">
               <div className="space-y-1">
                 <p className="text-veridian-200 text-xs uppercase font-bold tracking-wider">Account Tier</p>
-                <p className="text-xl font-bold">Veridian Elite</p>
+                <p className="text-xl font-bold">MiniBank Elite</p>
               </div>
               <Separator className="bg-white/10" />
               <div className="space-y-1">

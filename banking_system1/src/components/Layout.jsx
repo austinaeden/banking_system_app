@@ -52,7 +52,7 @@ export default function Layout({ children, user, onLogout, activeTab, setActiveT
             )}
           </div>
           <div className="hidden md:block">
-            <span className="font-bold text-xl tracking-tight leading-none block">Veridian</span>
+            <span className="font-bold text-xl tracking-tight leading-none block">MiniBank</span>
             {user?.role === 'ADMIN' && (
               <Badge variant="outline" className="text-[9px] bg-slate-800 text-slate-300 border-none px-1.5 mt-0.5 tracking-widest uppercase">Admin</Badge>
             )}

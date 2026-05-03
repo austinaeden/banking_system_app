@@ -1,4 +1,4 @@
-// Simple LocalStorage based Mock Database for Veridian Bank
+// Simple LocalStorage based Mock Database for MiniBank
 
 const INITIAL_DATA = {
   users: [
@@ -54,7 +54,7 @@ const INITIAL_DATA = {
   ]
 };
 
-const STORAGE_KEY = 'veridian_bank_db';
+const STORAGE_KEY = 'minibank_db';
 
 const getDb = () => {
   const data = localStorage.getItem(STORAGE_KEY);
