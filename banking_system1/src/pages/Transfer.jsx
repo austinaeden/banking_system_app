@@ -72,7 +72,7 @@ export default function Transfer({ accounts, onTransfer }) {
                 </SelectTrigger>
                 <SelectContent>
                   {accounts.map(acc => (
-                    <SelectItem key={acc.id} value={acc.id}>
+                    <SelectItem key={acc.id} value={acc.accountNumber}>
                       {acc.type} ({acc.accountNumber}) - ${acc.balance.toLocaleString()}
                     </SelectItem>
                   ))}
