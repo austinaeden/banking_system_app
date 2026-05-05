@@ -19,7 +19,7 @@ export default function AdminUsers({ onViewProfile }) {
   }, []);
 
   const filteredUsers = (users || []).filter(user => 
-    (user.name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (user.username || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
     (user.email || '').toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -54,9 +54,13 @@ export default function AdminUsers({ onViewProfile }) {
             <div className={`h-24 ${user.role === 'ADMIN' ? 'bg-indigo-600' : 'bg-slate-800'}`}></div>
             <CardContent className="p-6 pt-0 relative">
               <div className="flex justify-between items-start">
-                <div className="-mt-12 w-24 h-24 rounded-2xl bg-white p-1 rounded-full shadow-lg">
-                  <div className={`w-full h-full rounded-full flex items-center justify-center text-3xl font-black text-white ${user.role === 'ADMIN' ? 'bg-indigo-500' : 'bg-emerald-500'}`}>
-                    {user.name ? user.name.charAt(0) : '?'}
+                <div className="-mt-12 w-24 h-24 rounded-2xl bg-white p-1 rounded-full shadow-lg overflow-hidden">
+                  <div className={`w-full h-full rounded-full flex items-center justify-center text-3xl font-black text-white overflow-hidden ${user.role === 'ADMIN' ? 'bg-indigo-500' : 'bg-emerald-500'}`}>
+                    {user.profilePhoto ? (
+                      <img src={user.profilePhoto} alt={user.username} className="w-full h-full object-cover" />
+                    ) : (
+                      user.username ? user.username.charAt(0) : '?'
+                    )}
                   </div>
                 </div>
                 <Badge className="mt-4 rounded-lg px-3 py-1 bg-slate-100 text-slate-600 border-none font-bold">
@@ -65,7 +69,7 @@ export default function AdminUsers({ onViewProfile }) {
               </div>
 
               <div className="mt-4">
-                <h3 className="text-xl font-bold text-slate-900 truncate">{user.name}</h3>
+                <h3 className="text-xl font-bold text-slate-900 truncate">{user.username}</h3>
                 <div className="flex items-center gap-2 mt-2 text-slate-500">
                   <Mail className="w-4 h-4 shrink-0" />
                   <span className="text-sm font-medium truncate">{user.email}</span>

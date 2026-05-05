@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
-import { 
-  User, 
-  Mail, 
-  Phone, 
-  Camera, 
+import {
+  User,
+  Mail,
+  Phone,
+  Camera,
   Trash2,
-  Shield, 
+  Shield,
   Bell,
-  CheckCircle2,
-  ArrowLeft
+  CheckCircle2
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -17,7 +16,7 @@ import { Label } from '@/components/ui/label';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
 
-export default function Profile({ user, onUpdate, onUpdatePhoto, isAdminView, onBack }) {
+export default function Profile({ user, onUpdate, onUpdatePhoto }) {
   const [formData, setFormData] = useState({
     name: user.name || user.username,
     email: user.email,
@@ -61,16 +60,6 @@ export default function Profile({ user, onUpdate, onUpdatePhoto, isAdminView, on
 
   return (
     <div className="max-w-4xl mx-auto space-y-8">
-      {isAdminView && (
-        <Button 
-          variant="ghost" 
-          onClick={onBack}
-          className="gap-2 text-slate-500 hover:text-slate-900 -ml-4"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          Back to Users
-        </Button>
-      )}
       <div className="flex items-center gap-6">
         <div className="relative group">
           <Avatar className="w-24 h-24 border-4 border-white shadow-xl">
@@ -78,17 +67,17 @@ export default function Profile({ user, onUpdate, onUpdatePhoto, isAdminView, on
             <AvatarFallback>{(user.name || user.username).charAt(0)}</AvatarFallback>
           </Avatar>
           <div className="absolute -bottom-1 -right-1 flex gap-2">
-            <label 
+            <label
               htmlFor="photo-upload"
               className="p-2 bg-veridian-700 text-white rounded-full shadow-lg hover:bg-veridian-800 transition-colors cursor-pointer flex items-center justify-center border-2 border-white"
               title="Change photo"
             >
               <Camera className="w-4 h-4" />
-              <input 
-                id="photo-upload" 
-                type="file" 
-                accept="image/*" 
-                className="hidden" 
+              <input
+                id="photo-upload"
+                type="file"
+                accept="image/*"
+                className="hidden"
                 onChange={handlePhotoUpload}
               />
             </label>
@@ -125,11 +114,11 @@ export default function Profile({ user, onUpdate, onUpdatePhoto, isAdminView, on
                     <Label htmlFor="name">Full Name</Label>
                     <div className="relative">
                       <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                      <Input 
-                        id="name" 
+                      <Input
+                        id="name"
                         className="pl-10 h-11"
                         value={formData.name}
-                        onChange={(e) => setFormData({...formData, name: e.target.value})}
+                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                       />
                     </div>
                   </div>
@@ -137,12 +126,12 @@ export default function Profile({ user, onUpdate, onUpdatePhoto, isAdminView, on
                     <Label htmlFor="email">Email Address</Label>
                     <div className="relative">
                       <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                      <Input 
-                        id="email" 
+                      <Input
+                        id="email"
                         type="email"
                         className="pl-10 h-11"
                         value={formData.email}
-                        onChange={(e) => setFormData({...formData, email: e.target.value})}
+                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                       />
                     </div>
                   </div>
@@ -150,11 +139,11 @@ export default function Profile({ user, onUpdate, onUpdatePhoto, isAdminView, on
                     <Label htmlFor="phone">Phone Number</Label>
                     <div className="relative">
                       <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                      <Input 
-                        id="phone" 
+                      <Input
+                        id="phone"
                         className="pl-10 h-11"
                         value={formData.phone}
-                        onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                       />
                     </div>
                   </div>
@@ -167,8 +156,8 @@ export default function Profile({ user, onUpdate, onUpdatePhoto, isAdminView, on
                       Changes saved successfully
                     </div>
                   )}
-                  <Button 
-                    type="submit" 
+                  <Button
+                    type="submit"
                     disabled={loading}
                     className="ml-auto bg-veridian-700 hover:bg-veridian-800 text-white px-8 h-11 rounded-xl"
                   >
