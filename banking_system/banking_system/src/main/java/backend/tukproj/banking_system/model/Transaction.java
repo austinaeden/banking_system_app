@@ -1,6 +1,7 @@
 package backend.tukproj.banking_system.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
@@ -16,13 +17,21 @@ public class Transaction {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    @JsonBackReference
+    @JsonIgnore
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id", nullable = false)
-    @JsonBackReference
+    @JsonIgnore
     private Account account;
+
+    @Column(name = "account_id", insertable = false, updatable = false)
+    @JsonProperty("accountId")
+    private Long accountId;
+
+    @Column(name = "user_id", insertable = false, updatable = false)
+    @JsonProperty("userId")
+    private Long userId;
 
     @Column(name = "recipient_info", nullable = false, length = 255)
     @JsonProperty("payee")
@@ -51,19 +60,27 @@ public class Transaction {
     public void setUser(User user) { this.user = user; }
 
     @JsonProperty("userId")
-    public Long getUserId() {
-        return user != null ? user.getId() : null;
-    }
+    public Long getUserId() { return userId; }
 
     public Account getAccount() { return account; }
     public void setAccount(Account account) { this.account = account; }
 
+    @JsonProperty("accountId")
+    public Long getAccountId() { return accountId; }
+
+    @JsonProperty("accountNumber")
+    public String getAccountNumber() {
+        return account != null ? account.getAccountNumber() : null;
+    }
+
     public String getRecipientInfo() { return recipientInfo; }
     public void setRecipientInfo(String recipientInfo) { this.recipientInfo = recipientInfo; }
 
+    @JsonProperty("amount")
     public BigDecimal getAmount() { return amount; }
     public void setAmount(BigDecimal amount) { this.amount = amount; }
 
+    @JsonProperty("category")
     public String getCategory() { return category; }
     public void setCategory(String category) { this.category = category; }
 

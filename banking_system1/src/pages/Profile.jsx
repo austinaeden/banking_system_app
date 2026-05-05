@@ -4,9 +4,11 @@ import {
   Mail, 
   Phone, 
   Camera, 
+  Trash2,
   Shield, 
   Bell,
-  CheckCircle2
+  CheckCircle2,
+  ArrowLeft
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -15,7 +17,7 @@ import { Label } from '@/components/ui/label';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
 
-export default function Profile({ user, onUpdate, onUpdatePhoto }) {
+export default function Profile({ user, onUpdate, onUpdatePhoto, isAdminView, onBack }) {
   const [formData, setFormData] = useState({
     name: user.name || user.username,
     email: user.email,
@@ -40,6 +42,12 @@ export default function Profile({ user, onUpdate, onUpdatePhoto }) {
     }
   };
 
+  const handleRemovePhoto = () => {
+    if (window.confirm("Are you sure you want to remove your profile photo?")) {
+      onUpdatePhoto(null);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -53,16 +61,27 @@ export default function Profile({ user, onUpdate, onUpdatePhoto }) {
 
   return (
     <div className="max-w-4xl mx-auto space-y-8">
+      {isAdminView && (
+        <Button 
+          variant="ghost" 
+          onClick={onBack}
+          className="gap-2 text-slate-500 hover:text-slate-900 -ml-4"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Back to Users
+        </Button>
+      )}
       <div className="flex items-center gap-6">
         <div className="relative group">
           <Avatar className="w-24 h-24 border-4 border-white shadow-xl">
             <AvatarImage src={user.profilePhoto || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.username}`} />
             <AvatarFallback>{(user.name || user.username).charAt(0)}</AvatarFallback>
           </Avatar>
-          <div className="absolute bottom-0 right-0">
+          <div className="absolute -bottom-1 -right-1 flex gap-2">
             <label 
               htmlFor="photo-upload"
-              className="p-2 bg-veridian-700 text-white rounded-full shadow-lg hover:bg-veridian-800 transition-colors cursor-pointer flex items-center justify-center"
+              className="p-2 bg-veridian-700 text-white rounded-full shadow-lg hover:bg-veridian-800 transition-colors cursor-pointer flex items-center justify-center border-2 border-white"
+              title="Change photo"
             >
               <Camera className="w-4 h-4" />
               <input 
@@ -73,6 +92,15 @@ export default function Profile({ user, onUpdate, onUpdatePhoto }) {
                 onChange={handlePhotoUpload}
               />
             </label>
+            {user.profilePhoto && (
+              <button
+                onClick={handleRemovePhoto}
+                className="p-2 bg-red-600 text-white rounded-full shadow-lg hover:bg-red-700 transition-colors flex items-center justify-center border-2 border-white"
+                title="Remove photo"
+              >
+                <Trash2 className="w-4 h-4" />
+              </button>
+            )}
           </div>
         </div>
         <div>

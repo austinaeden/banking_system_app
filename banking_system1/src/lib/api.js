@@ -113,5 +113,40 @@ export const api = {
       console.error("UpdatePhoto Error:", error);
       return { success: false, message: 'Network error occurred.' };
     }
+  },
+
+  deleteNotification: async (id) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/users/notifications/${id}`, {
+        method: 'DELETE'
+      });
+      return await response.json();
+    } catch (error) {
+      console.error("DeleteNotification Error:", error);
+      return { success: false, message: 'Network error occurred.' };
+    }
+  },
+
+  toggleFreezeAccount: async (id) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/admin/accounts/${id}/toggle-freeze`, {
+        method: 'POST'
+      });
+      return await response.json();
+    } catch (error) {
+      console.error("ToggleFreeze Error:", error);
+      return { success: false, message: 'Network error occurred.' };
+    }
+  },
+
+  getAccountTransactions: async (accountId) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/admin/accounts/${accountId}/transactions`);
+      if (!response.ok) throw new Error("Failed to fetch account transactions");
+      return await response.json();
+    } catch (error) {
+      console.error("GetAccountTransactions Error:", error);
+      return [];
+    }
   }
 };

@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Download, ArrowUpRight, ArrowDownLeft } from 'lucide-react';
+import { Search, Download, ArrowUpRight, ArrowDownLeft, ArrowLeft } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { api } from '@/lib/api';
 
-export default function AdminTransactions() {
+export default function AdminTransactions({ initialAccountId, onBack }) {
   const [adminData, setAdminData] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -24,16 +24,31 @@ export default function AdminTransactions() {
   const allUsers = adminData?.allUsers || [];
 
   const filteredTransactions = allTransactions.filter(tx => 
-    (tx.payee || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (tx.category || '').toLowerCase().includes(searchTerm.toLowerCase())
+    (!initialAccountId || String(tx.accountId) === String(initialAccountId)) &&
+    ((tx.payee || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (tx.category || '').toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
   return (
     <div className="space-y-8 max-w-7xl mx-auto">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
         <div>
-          <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">System Transactions</h1>
-          <p className="text-slate-500 font-medium mt-1">Real-time ledger and transaction history</p>
+          {initialAccountId && (
+            <Button 
+              variant="ghost" 
+              onClick={onBack}
+              className="gap-2 text-slate-500 hover:text-slate-900 mb-4 -ml-4"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Back to Accounts
+            </Button>
+          )}
+          <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">
+            {initialAccountId ? `Account Audit: ${filteredTransactions[0]?.accountNumber || initialAccountId}` : 'System Transactions'}
+          </h1>
+          <p className="text-slate-500 font-medium mt-1">
+            {initialAccountId ? 'Detailed transaction history for this account' : 'Real-time ledger and transaction history'}
+          </p>
         </div>
       </div>
 
@@ -81,7 +96,7 @@ export default function AdminTransactions() {
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <p className="text-sm font-semibold text-slate-600">{user?.name || 'Unknown'}</p>
+                      <p className="text-sm font-semibold text-slate-600">{user?.username || 'Unknown'}</p>
                     </td>
                     <td className="px-6 py-4 text-sm font-medium text-slate-500">{tx.date}</td>
                     <td className="px-6 py-4">

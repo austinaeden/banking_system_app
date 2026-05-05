@@ -70,4 +70,10 @@ public class UserController {
             return ResponseEntity.badRequest().body(Map.of("success", false, "message", "User not found"));
         }
     }
+
+    @DeleteMapping("/notifications/{id}")
+    public ResponseEntity<?> deleteNotification(@PathVariable Long id) {
+        notificationService.deleteNotification(id);
+        return ResponseEntity.ok(Map.of("success", true));
+    }
 }

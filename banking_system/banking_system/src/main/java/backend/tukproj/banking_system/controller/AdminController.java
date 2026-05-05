@@ -1,5 +1,6 @@
 package backend.tukproj.banking_system.controller;
 
+import backend.tukproj.banking_system.model.Account;
 import backend.tukproj.banking_system.service.AccountService;
 import backend.tukproj.banking_system.service.NotificationService;
 import backend.tukproj.banking_system.service.TransactionService;
@@ -53,5 +54,20 @@ public class AdminController {
         
         notificationService.sendNotificationToAll(title, message);
         return ResponseEntity.ok(Map.of("success", true));
+    }
+
+    @PostMapping("/accounts/{id}/toggle-freeze")
+    public ResponseEntity<?> toggleFreeze(@PathVariable Long id) {
+        Account account = accountService.toggleFreeze(id);
+        if (account != null) {
+            return ResponseEntity.ok(Map.of("success", true, "isFrozen", account.getIsFrozen()));
+        }
+        return ResponseEntity.badRequest().body(Map.of("success", false, "message", "Account not found"));
+    }
+
+    @GetMapping("/accounts/{id}/transactions")
+    public ResponseEntity<?> getAccountTransactions(@PathVariable Long id) {
+        var transactions = transactionService.getTransactionsByAccountId(id);
+        return ResponseEntity.ok(transactions);
     }
 }

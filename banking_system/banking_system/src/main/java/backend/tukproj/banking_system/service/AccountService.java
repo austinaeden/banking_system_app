@@ -27,4 +27,13 @@ public class AccountService {
                 .map(Account::getBalance)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
+
+    public Account toggleFreeze(Long accountId) {
+        Account acc = accountRepository.findById(accountId).orElse(null);
+        if (acc != null) {
+            acc.setIsFrozen(!acc.getIsFrozen());
+            return accountRepository.save(acc);
+        }
+        return null;
+    }
 }

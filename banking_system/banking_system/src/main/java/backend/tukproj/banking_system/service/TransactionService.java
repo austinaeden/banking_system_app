@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -31,6 +32,10 @@ public class TransactionService {
 
     public List<Transaction> getAllTransactions() {
         return transactionRepository.findAllByOrderByTransactionDateDesc();
+    }
+
+    public List<Transaction> getTransactionsByAccountId(Long accountId) {
+        return transactionRepository.findByAccount_IdOrderByTransactionDateDesc(accountId);
     }
 
     @Transactional
@@ -57,6 +62,7 @@ public class TransactionService {
         transaction.setAmount(amount.negate()); // Withdrawals are negative in your frontend structure
         transaction.setRecipientInfo(toAccountName);
         transaction.setCategory("Transfer");
+        transaction.setTransactionDate(LocalDateTime.now());
         
         return transactionRepository.save(transaction);
     }

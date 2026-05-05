@@ -4,7 +4,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 
-export default function Notifications({ notifications }) {
+export default function Notifications({ notifications, user, onDelete }) {
   if (!notifications || notifications.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-24 text-slate-400">
@@ -64,7 +64,12 @@ export default function Notifications({ notifications }) {
                   </p>
 
                   <div className="flex items-center justify-end gap-2 pt-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <Button variant="ghost" size="sm" className="text-xs font-bold text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg">
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="text-xs font-bold text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg"
+                      onClick={() => onDelete(notif.id, user?.role === 'ADMIN')}
+                    >
                       <Trash2 className="w-3.5 h-3.5 mr-1" />
                       Delete
                     </Button>

@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { api } from '@/lib/api';
 
-export default function AdminUsers() {
+export default function AdminUsers({ onViewProfile }) {
   const [users, setUsers] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -59,7 +59,7 @@ export default function AdminUsers() {
                     {user.name ? user.name.charAt(0) : '?'}
                   </div>
                 </div>
-                <Badge className={`mt-4 border-none shadow-sm ${user.role === 'ADMIN' ? 'bg-indigo-100 text-indigo-800' : 'bg-emerald-100 text-emerald-800'}`}>
+                <Badge className="mt-4 rounded-lg px-3 py-1 bg-slate-100 text-slate-600 border-none font-bold">
                   {user.role}
                 </Badge>
               </div>
@@ -77,7 +77,13 @@ export default function AdminUsers() {
               </div>
 
               <div className="mt-6 flex gap-2">
-                <Button variant="outline" className="flex-1 rounded-xl bg-slate-50 border-slate-200 text-slate-700 font-semibold hover:bg-slate-100">Profile</Button>
+                <Button 
+                  onClick={() => onViewProfile(user)}
+                  variant="outline" 
+                  className="flex-1 rounded-xl bg-slate-50 border-slate-200 text-slate-700 font-semibold hover:bg-slate-100"
+                >
+                  Profile
+                </Button>
                 <Button variant="outline" size="icon" className="rounded-xl border-slate-200 text-slate-500 hover:text-indigo-600 hover:bg-indigo-50">
                   <MoreVertical className="w-4 h-4" />
                 </Button>

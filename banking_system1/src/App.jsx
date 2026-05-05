@@ -14,6 +14,7 @@ import AdminOverview from './pages/admin/AdminOverview';
 import AdminUsers from './pages/admin/AdminUsers';
 import AdminAccounts from './pages/admin/AdminAccounts';
 import AdminTransactions from './pages/admin/AdminTransactions';
+import AdminAccountAudit from './pages/admin/AdminAccountAudit';
 import AdminSendNotification from './pages/admin/AdminSendNotification';
 import Notifications from './pages/Notifications';
 import { api } from './lib/api';
@@ -25,6 +26,8 @@ export default function App() {
   const [transactions, setTransactions] = useState([]);
   const [activeTab, setActiveTab] = useState('dashboard');
   const [loading, setLoading] = useState(true);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [selectedAccount, setSelectedAccount] = useState(null);
   const [notifications, setNotifications] = useState([
     {
       id: 1,
@@ -107,6 +110,25 @@ export default function App() {
     return false;
   };
 
+  const handleUpdateOtherProfile = async (profileData) => {
+    const res = await api.updateProfile(profileData, selectedUser.id);
+    if (res.success) {
+      // We might want to refresh the admin's view of users too, but for now just update selectedUser
+      setSelectedUser(res.user);
+      return true;
+    }
+    return false;
+  };
+
+  const handleUpdateOtherPhoto = async (photoUrl) => {
+    const res = await api.updatePhoto(photoUrl, selectedUser.id);
+    if (res.success) {
+      setSelectedUser(res.user);
+      return true;
+    }
+    return false;
+  };
+
   const handleSendNotification = async (notif) => {
     const res = await api.sendNotification(notif.name, notif.message);
     if (res.success) {
@@ -120,6 +142,18 @@ export default function App() {
     }
   };
 
+  const handleDeleteNotification = async (id, isAdmin) => {
+    if (isAdmin) {
+      const res = await api.deleteNotification(id);
+      if (res.success) {
+        setNotifications(notifications.filter(n => n.id !== id));
+      }
+    } else {
+      // For regular users, just hide it locally
+      setNotifications(notifications.filter(n => n.id !== id));
+    }
+  };
+
   if (!user) {
     return <Auth onLogin={handleLogin} onRegister={handleRegister} />;
   }
@@ -130,13 +164,18 @@ export default function App() {
     if (user.role === 'ADMIN') {
       switch (activeTab) {
         case 'overview': return <AdminOverview />;
-        case 'users': return <AdminUsers />;
-        case 'accounts': return <AdminAccounts />;
+        case 'users': return <AdminUsers onViewProfile={(u) => { setSelectedUser(u); setActiveTab('user-profile'); }} />;
+        case 'accounts': return <AdminAccounts onViewAudit={(acc) => { setSelectedAccount(acc); setActiveTab('account-audit'); }} />;
         case 'transactions': return <AdminTransactions />;
         case 'send-notifications': return <AdminSendNotification onSendNotification={handleSendNotification} />;
-        case 'profile': return <Profile user={user} onUpdate={handleUpdateProfile} onUpdatePhoto={handleUpdatePhoto} />;
+        case 'profile': return <Profile key={user.id} user={user} onUpdate={handleUpdateProfile} onUpdatePhoto={handleUpdatePhoto} />;
         case 'settings': return <div className="p-8 text-slate-400">System settings coming soon...</div>;
-        case 'notifications': return <Notifications notifications={notifications} />;
+        case 'notifications': return <Notifications notifications={notifications} user={user} onDelete={handleDeleteNotification} />;
+        case 'user-profile': 
+          if (!selectedUser) return <div className="p-8 text-slate-400 text-center py-20">Loading profile...</div>;
+          return <Profile key={selectedUser.id} user={selectedUser} onUpdate={handleUpdateOtherProfile} onUpdatePhoto={handleUpdateOtherPhoto} isAdminView={true} onBack={() => setActiveTab('users')} />;
+        case 'account-audit':
+          return <AdminAccountAudit account={selectedAccount} onBack={() => setActiveTab('accounts')} />;
         default: return <AdminOverview />;
       }
     }
@@ -148,7 +187,7 @@ export default function App() {
       case 'transactions': return <Transactions transactions={transactions} />;
       case 'profile': return <Profile user={user} onUpdate={handleUpdateProfile} onUpdatePhoto={handleUpdatePhoto} />;
       case 'settings': return <div className="flex items-center justify-center h-[60vh] text-slate-400">Settings module coming soon...</div>;
-      case 'notifications': return <Notifications notifications={notifications} />;
+      case 'notifications': return <Notifications notifications={notifications} user={user} onDelete={handleDeleteNotification} />;
       default: return <Dashboard accounts={accounts} transactions={transactions} />;
     }
   };
