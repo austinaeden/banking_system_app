@@ -11,7 +11,8 @@ CREATE TABLE users (
     account_tier VARCHAR(50) DEFAULT 'Standard',
     role VARCHAR(20) DEFAULT 'USER', -- 'USER' or 'ADMIN'
     profile_photo LONGTEXT, -- Stores Base64 image data
-    registered_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    registered_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP -- Automatically track updates
 );
 
 -- 2. Accounts Table
@@ -23,7 +24,8 @@ CREATE TABLE accounts (
     account_type VARCHAR(20) NOT NULL CHECK (account_type IN ('Personal', 'Business')),
     balance DECIMAL(15, 2) DEFAULT 0.00,
     is_frozen BOOLEAN DEFAULT FALSE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP -- Automatically track updates
 );
 
 -- 3. Transactions Table
@@ -43,8 +45,7 @@ CREATE TABLE notifications (
     user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     name VARCHAR(100) NOT NULL, -- name of the notification
     message TEXT NOT NULL, -- the notification content
-    notification_date DATE DEFAULT CURRENT_DATE,
-    notification_time TIME DEFAULT CURRENT_TIME
+    notification_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP -- Combined date and time
 );
 
 -- 5. Audit Table (For Admin side: to track audits/actions)

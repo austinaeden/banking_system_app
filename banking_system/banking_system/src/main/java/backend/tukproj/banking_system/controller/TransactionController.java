@@ -19,12 +19,12 @@ public class TransactionController {
     @PostMapping("/transfer")
     public ResponseEntity<?> transfer(@RequestBody Map<String, Object> transferData) {
         try {
-            Long fromAccountId = Long.parseLong(transferData.get("fromAccount").toString());
+            String fromAccountNumber = transferData.get("fromAccount").toString();
             String toAccountName = transferData.get("toAccount").toString();
             BigDecimal amount = new BigDecimal(transferData.get("amount").toString());
             Long userId = Long.parseLong(transferData.get("userId").toString());
 
-            Transaction result = transactionService.processTransfer(fromAccountId, toAccountName, amount, userId);
+            Transaction result = transactionService.processTransfer(fromAccountNumber, toAccountName, amount, userId);
             return ResponseEntity.ok(Map.of("success", true, "balance", result.getAccount().getBalance()));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(Map.of("success", false, "message", e.getMessage()));

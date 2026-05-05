@@ -39,8 +39,8 @@ public class TransactionService {
     }
 
     @Transactional
-    public Transaction processTransfer(Long fromAccountId, String toAccountName, BigDecimal amount, Long userId) {
-        Account account = accountRepository.findById(fromAccountId).orElse(null);
+    public Transaction processTransfer(String fromAccountNumber, String toAccountName, BigDecimal amount, Long userId) {
+        Account account = accountRepository.findByAccountNumber(fromAccountNumber).orElse(null);
         User user = userRepository.findById(userId).orElse(null);
 
         if (account == null || user == null) {
