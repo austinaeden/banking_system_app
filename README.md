@@ -13,22 +13,28 @@ The system uses MySQL via XAMPP.
 3. The backend will automatically create tables and seed default data (Admin & User) upon launch.
 
 ### 2. Backend Setup (Spring Boot)
-Located in `banking_system/banking_system/`.
+Located in `banking_system_springboot/`.
 - **JDK Requirement**: Java 25
 - **Port**: `8085` (Configured to avoid conflicts with Oracle).
 - **Execution**:
   ```powershell
-  cd banking_system/banking_system
+  cd banking_system_springboot
   ./mvnw.cmd spring-boot:run
   ```
+  or
+  ```cmd
+  cd banking_system_springboot
+  mvnw.cmd spring-boot:run
+  ```
+  
 
 ### 3. Frontend Setup (React + Vite)
-Located in `banking_system/banking_system1/`.
+Located in `banking_system_react/`.
 - **Node.js Requirement**: v18+
 - **Port**: `3001`
 - **Execution**:
   ```powershell
-  cd banking_system1
+  cd banking_system_react
   npm install
   npm run dev
   ```
@@ -75,13 +81,13 @@ The system comes pre-seeded with the following accounts:
 ## 📂 Project Structure
 ```text
 banking_system/
-├── banking_system/          # Spring Boot Backend
-│   ├── src/                 # Java Source Code
-│   ├── pom.xml              # Maven Config
-│   └── mvnw.cmd             # Maven Wrapper
-├── banking_system1/         # React Frontend
-│   ├── src/                 # React Source Code
-│   ├── public/              # Static Assets (Logo)
-│   └── vite.config.js       # Vite Configuration
-└── bank_system.sql          # Database Schema Reference
+├── banking_system_springboot/ # Spring Boot Backend
+│   ├── src/                  # Java Source Code
+│   ├── pom.xml               # Maven Config
+│   └── mvnw.cmd              # Maven Wrapper
+├── banking_system_react/      # React Frontend
+│   ├── src/                  # React Source Code
+│   ├── public/               # Static Assets (Logo)
+│   └── vite.config.js        # Vite Configuration
+└── bank_system.sql           # Database Schema Reference
 ```
